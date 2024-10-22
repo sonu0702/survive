@@ -18,17 +18,21 @@ export default function Home() {
 
     // Telegram Web App API initialization
     useEffect(() => {
-      console.log("setting user");
-      if (typeof window !== 'undefined' && window.Telegram) {
-        console.log("ready to set");
-        const tg = window.Telegram.WebApp;
-        tg.ready(); // Notify Telegram the app is ready
-        
-        // Get user data from Telegram WebApp
-        const userData = tg.initDataUnsafe?.user;
-        console.log("userData",userData);
-        if (userData) {
-          setUser(userData);
+      if (typeof window !== 'undefined') {
+        console.log("Window object is available");
+        console.log("Telegram:", window.Telegram); // Check if window.Telegram exists
+    
+        if (window.Telegram) {
+          console.log("Telegram WebApp API is available");
+          const tg = window.Telegram.WebApp;
+          tg.ready(); // Notify Telegram that the app is ready
+    
+          const userData = tg.initDataUnsafe?.user;
+          if (userData) {
+            setUser(userData);
+          }
+        } else {
+          console.log("Telegram WebApp API is NOT available");
         }
       }
     }, []);
