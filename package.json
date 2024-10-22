@@ -17,8 +17,7 @@
     "next": "15.0.0",
     "react": "19.0.0-rc-65a56d0e-20241020",
     "react-dom": "19.0.0-rc-65a56d0e-20241020",
-    "react-swipeable": "^7.0.1",
-    "react-telegram-webapp": "^0.1.5"
+    "react-swipeable": "^7.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

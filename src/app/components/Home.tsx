@@ -6,36 +6,16 @@ import { motion } from 'framer-motion';
 import ScenarioCard from './ScenarioCard';
 import Leaderboard from './Leaderboard';
 import { Trophy } from 'lucide-react';
+import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 
 export default function Home() {
+  const { webApp, user } = useTelegramWebApp();
   const [strategy, setStrategy] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [resultVisible, setResultVisible] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
 
   const maxChars = 140;
-
-    // Telegram Web App API initialization
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        console.log("Window object is available");
-        console.log("Telegram:", window.Telegram); // Check if window.Telegram exists
-    
-        if (window.Telegram) {
-          console.log("Telegram WebApp API is available");
-          const tg = window.Telegram.WebApp;
-          tg.ready(); // Notify Telegram that the app is ready
-    
-          const userData = tg.initDataUnsafe?.user;
-          if (userData) {
-            setUser(userData);
-          }
-        } else {
-          console.log("Telegram WebApp API is NOT available");
-        }
-      }
-    }, []);
   
   const handleSubmit = (e:any) => {
     e.preventDefault();
@@ -44,6 +24,13 @@ export default function Home() {
     // Simulate API call
     setTimeout(() => {
       setResultVisible(true)
+      if (webApp) {
+        console.log(JSON.stringify({
+          strategy: strategy,
+          // scenario: scenarios[currentScenarioIndex].id,
+          user: user
+        }))
+      }
       // Show result or do something with the strategy
     }, 2000);
   };
