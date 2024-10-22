@@ -2,40 +2,114 @@
 // app/components/Home.tsx
 import { useEffect, useState } from 'react';
 import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ScenarioCard from './ScenarioCard';
 import Leaderboard from './Leaderboard';
-import { Trophy } from 'lucide-react';
-import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import { Trophy, DollarSign, Skull, ThumbsUp, Ghost } from 'lucide-react';
+// import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import confetti from 'canvas-confetti';
+
+// Mock API response - replace with your actual API call
+const submitStrategyToBackend = async (strategy: any) => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  // Mock response - replace with actual API call
+  return {
+    survived: Math.random() > 0.5, // Random result for testing
+    // survived:false,
+    message: Math.random() > 0.5 ?
+      "Your quick thinking and resourcefulness led to survival!" :
+      "Your strategy shows promise, but the cold is unforgiving...",
+    reward: Math.random() > 0.5 ? 10 : 1
+  };
+};
+
+// Confetti animation function
+const triggerConfetti = () => {
+  const count = 200;
+  const defaults = {
+    origin: { y: 0.7 },
+    zIndex: 1500
+  };
+
+  function fire(particleRatio: any, opts: any) {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio)
+    });
+  }
+
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  });
+
+  fire(0.2, {
+    spread: 60,
+  });
+
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  });
+};
 
 export default function Home() {
-  const { webApp, user } = useTelegramWebApp();
+  // const { webApp, user } = useTelegramWebApp();
   const [strategy, setStrategy] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [resultVisible, setResultVisible] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [result, setResult] = useState<any>(null);
 
   const maxChars = 140;
-  
-  const handleSubmit = (e:any) => {
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSubmitted(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setResultVisible(true)
-      if (webApp) {
-        console.log(JSON.stringify({
-          strategy: strategy,
-          // scenario: scenarios[currentScenarioIndex].id,
-          user: user
-        }))
-      }
-      // Show result or do something with the strategy
-    }, 2000);
+    try {
+
+
+      const response = await submitStrategyToBackend(strategy);
+      console.log("response", response);
+      setResult(response);
+      // Simulate API call
+      setTimeout(() => {
+        setResultVisible(true)
+        // if (webApp) {
+        //   console.log(JSON.stringify({
+        //     strategy: strategy,
+        //     // scenario: scenarios[currentScenarioIndex].id,
+        //     user: user
+        //   }))
+        // }
+        if (response.survived) {
+          triggerConfetti();
+        }
+        // Show result or do something with the strategy
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting strategy:', error);
+    }
   };
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: any) => {
     if (e.target.value.length <= maxChars) {
       setStrategy(e.target.value);
     }
@@ -141,23 +215,132 @@ export default function Home() {
       {/* Leaderboard */}
       {/* <Leaderboard /> */}
       {submitted && (
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: resultVisible ? 1 : 0, scale: resultVisible ? 1 : 0.8 }} transition={{ duration: 0.5, delay: 0.5 }}>
-          <Box sx={{ width: 350, height: 240, backgroundColor: '#1a1a1a', borderRadius: 2, mt: 4, textAlign: 'center', color: '#FFFFFF', p: 4 }}>
-            {resultVisible ? (
-              <>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <Box sx={{ width: 60, height: 60, backgroundColor: '#6b21a8', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    ⚡
-                  </Box>
+        <AnimatePresence mode="wait">
+          {!resultVisible ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '2rem'
+              }}
+            >
+              <CircularProgress sx={{ color: '#6b21a8' }} />
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Box
+                sx={{
+                  width: 350,
+                  backgroundColor: '#1a1a1a',
+                  borderRadius: 2,
+                  mt: 4,
+                  overflow: 'hidden',
+                  // position: 'relative'
+                }}
+              >
+                {/* Result Banner */}
+
+
+                {/* Result Content */}
+                <Box sx={{
+                  p: 3,
+                  textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  justifyItems: 'center',
+                  flexDirection: 'column',
+                  alignItems:'center'
+                }}>
+                  {/* Icon Animation */}
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1, rotate: result?.survived ? 360 : 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <Box
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: '50%',
+                        backgroundColor: result?.survived ? '#059669' : '#991b1b',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        margin: '0 auto 1rem',
+                        flexDirection: 'column'
+                      }}
+                    >
+                      {result?.survived ? (
+                        <ThumbsUp size={40} color="#FFFFFF" />
+                      ) : (
+                        <Skull size={40} color="#FFFFFF" />
+                      )}
+                    </Box>
+                  </motion.div>
+
+                  {/* Judgement Text */}
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontFamily: 'monospace',
+                      mb: 2,
+                      color: '#FFFFFF'
+                    }}
+                  >
+                    JUDGEMENT
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: '#94a3b8',
+                      mb: 3,
+                      fontFamily: 'monospace'
+                    }}
+                  >
+                    {result?.message}
+                  </Typography>
+
+                  {/* Reward Animation */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.8 }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 1,
+                        color: '#fbbf24'
+                      }}
+                    >
+                      <DollarSign size={24} />
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontFamily: 'monospace',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {result?.reward}.00
+                      </Typography>
+                    </Box>
+                  </motion.div>
                 </Box>
-                <Typography variant="h4" sx={{ fontFamily: 'monospace', mt: 3 }}>JUDGEMENT</Typography>
-                <Typography sx={{ color: '#94a3b8', mt: 2 }}>{user?.first_name} strategy shows promise, but the cold is unforgiving...</Typography>
-              </>
-            ) : (
-              <CircularProgress sx={{ color: '#94a3b8' }} />
-            )}
-          </Box>
-        </motion.div>
+              </Box>
+            </motion.div>
+          )}
+        </AnimatePresence>
       )}
       <Leaderboard
         open={leaderboardOpen}
