@@ -16,14 +16,14 @@ export default function ScenarioCard() {
   const handlers = useSwipeable({
     onSwipedLeft: () => changeScenario(1),
     onSwipedRight: () => changeScenario(-1),
-    preventDefaultTouchmoveEvent: true,
+    // preventDefaultTouchmoveEvent: true,
     trackMouse: true,
     trackTouch: true,
     delta: 10,
     swipeDuration: 500,
   });
 
-  const changeScenario = (direction) => {
+  const changeScenario = (direction:any) => {
     setCurrentScenarioIndex((prevIndex) => {
       const newIndex = prevIndex + direction;
       if (newIndex < 0) return scenarios.length - 1;

@@ -33,7 +33,7 @@ export default function Home() {
       }
     }, []);
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:any) => {
     e.preventDefault();
     setSubmitted(true);
 
@@ -44,7 +44,7 @@ export default function Home() {
     }, 2000);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e:any) => {
     if (e.target.value.length <= maxChars) {
       setStrategy(e.target.value);
     }

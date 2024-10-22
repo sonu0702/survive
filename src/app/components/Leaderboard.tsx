@@ -14,7 +14,7 @@ const leaderboardData = [
   { rank: 10, name: 'Jack', score: 45 },
 ];
 
-export default function Leaderboard({ open, onClose }) {
+export default function Leaderboard({ open, onClose }:{open:any,onClose:any}) {
   return (
     <Modal
       open={open}
