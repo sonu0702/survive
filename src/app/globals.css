@@ -1,0 +1,36 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden;
+  width: 100%;
+  font-family: 'monospace', sans-serif;
+  background-color: #1a1a1a;
+  color: white;
+}
+
+#__next {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.MuiBox-root {
+  margin: 0 !important;
+}
+
+.MuiTextField-root {
+  width: 100% !important;
+}
+
+/* Ensure the input maintains proper padding on mobile */
+.MuiOutlinedInput-root {
+  width: 100% !important;
+}
