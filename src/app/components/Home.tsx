@@ -6,8 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ScenarioCard from './ScenarioCard';
 import Leaderboard from './Leaderboard';
 import { Trophy, DollarSign, Skull, ThumbsUp, Ghost } from 'lucide-react';
-// import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import confetti from 'canvas-confetti';
+import TypingText from './TypingText';
+import ScrollingJudgmentText from './ScrollingJudgementText';
+import FadingJudgmentText from './FadingJudgement';
+import ScenarioCardUpgraded from './ScenarioCardUpgraded';
 
 // Mock API response - replace with your actual API call
 const submitStrategyToBackend = async (strategy: any) => {
@@ -15,12 +19,13 @@ const submitStrategyToBackend = async (strategy: any) => {
   await new Promise(resolve => setTimeout(resolve, 100));
 
   // Mock response - replace with actual API call
+  let survived = Math.random() > 0.5
   return {
-    survived: Math.random() > 0.5, // Random result for testing
+    survived: survived, // Random result for testing
     // survived:false,
-    message: Math.random() > 0.5 ?
-      "Your quick thinking and resourcefulness led to survival!" :
-      "Your strategy shows promise, but the cold is unforgiving...",
+    message: survived ?
+      "Your quick thinking and resourcefulness led to survival!. This quick thinking and resourcefulness led to survival!. Hi Your quick thinking and resourcefulness led to survival!. Just say Your quick thinking and resourcefulness led to survival!" :
+      "Your strategy shows promise, but the cold is unforgiving... What this strategy shows promise, but the cold is unforgiving...",
     reward: Math.random() > 0.5 ? 10 : 1
   };
 };
@@ -70,7 +75,7 @@ const triggerConfetti = () => {
 };
 
 export default function Home() {
-  // const { webApp, user } = useTelegramWebApp();
+  const { webApp, user } = useTelegramWebApp();
   const [strategy, setStrategy] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [resultVisible, setResultVisible] = useState(false);
@@ -92,13 +97,13 @@ export default function Home() {
       // Simulate API call
       setTimeout(() => {
         setResultVisible(true)
-        // if (webApp) {
-        //   console.log(JSON.stringify({
-        //     strategy: strategy,
-        //     // scenario: scenarios[currentScenarioIndex].id,
-        //     user: user
-        //   }))
-        // }
+        if (webApp) {
+          console.log(JSON.stringify({
+            strategy: strategy,
+            // scenario: scenarios[currentScenarioIndex].id,
+            user: user
+          }))
+        }
         if (response.survived) {
           triggerConfetti();
         }
@@ -135,7 +140,13 @@ export default function Home() {
         }
       }}>
       {/* Scenario Card with Swipe */}
-      <ScenarioCard />
+      {/* <ScenarioCard />
+       */}
+       <ScenarioCardUpgraded 
+       onTimerComplete={() =>{
+          console.log("timer done")
+       }}
+       userName={`Hi ${user.username}`}/>
       <Box sx={{
         position: 'absolute',
         top: '16px',
@@ -258,7 +269,7 @@ export default function Home() {
                   justifyContent: 'center',
                   justifyItems: 'center',
                   flexDirection: 'column',
-                  alignItems:'center'
+                  alignItems: 'center'
                 }}>
                   {/* Icon Animation */}
                   <motion.div
@@ -299,7 +310,7 @@ export default function Home() {
                     JUDGEMENT
                   </Typography>
 
-                  <Typography
+                  {/* <Typography
                     sx={{
                       color: '#94a3b8',
                       mb: 3,
@@ -307,8 +318,20 @@ export default function Home() {
                     }}
                   >
                     {result?.message}
-                  </Typography>
-
+                  </Typography> */}
+                  {/* <TypingText
+                    text={result?.message || "Analyzing your strategy..."}
+                    speed={50}
+                    restartDelay={2000}
+                  /> */}
+                  {/* <ScrollingJudgmentText
+                    text={result?.message || "Your strategy shows remarkable adaptability in facing the harsh conditions. While the immediate survival was challenging, your approach demonstrated resourcefulness in utilizing available materials. The decision to prioritize shelter creation before nightfall proved crucial, though the method of heat conservation could be refined. Consider how different materials could be combined for better insulation. The wildlife encounter response was appropriate, but future strategies might benefit from more preventive measures..."}
+                    speed={50}
+                  /> */}
+                  <FadingJudgmentText
+                    text={result?.message || "Your strategy shows remarkable adaptability in facing the harsh conditions. While the immediate survival was challenging, your approach demonstrated resourcefulness in utilizing available materials. The decision to prioritize shelter creation before nightfall proved crucial, though the method of heat conservation could be refined. Consider how different materials could be combined for better insulation. The wildlife encounter response was appropriate, but future strategies might benefit from more preventive measures. Your decision-making process revealed a good balance between immediate needs and long-term survival considerations..."}
+                    speed={50}
+                  />
                   {/* Reward Animation */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
