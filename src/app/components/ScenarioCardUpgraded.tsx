@@ -125,7 +125,7 @@ export default function ScenarioCardUpgraded({ onTimerComplete, userName = "Play
               </Typography>
 
               {/* Timer */}
-              <Box
+              {/* <Box
                 sx={{
                   position: 'absolute',
                   top: 8,
@@ -145,7 +145,7 @@ export default function ScenarioCardUpgraded({ onTimerComplete, userName = "Play
                 >
                   {formatTime(timeLeft)}
                 </Typography>
-              </Box>
+              </Box> */}
 
               <Typography variant="h6" sx={{ mb: 1, fontFamily: 'monospace', mt: 3 }}>
                 SCENARIO #{scenarios[currentScenarioIndex].id}
