@@ -146,7 +146,7 @@ export default function Home() {
        onTimerComplete={() =>{
           console.log("timer done")
        }}
-       userName={`Hi ${user.username}`}/>
+       userName={`Hi ${user?.username}`}/>
       <Box sx={{
         position: 'absolute',
         top: '16px',
